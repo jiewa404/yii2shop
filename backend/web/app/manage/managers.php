@@ -36,7 +36,7 @@
                                     <td>{{manager.name}}</td>
                                     <td>{{manager.email}}</td>
                                     <td>{{manager.last_login_time | time}}</td>
-                                    <td>{{manager.last_login_ip}}</td>
+                                    <td>{{manager.last_login_ip | long2ip}}</td>
                                     <td>{{manager.create_time | time}}</td>
                                     <td class="align-left">
                                         <a href="">查看</a>
@@ -63,6 +63,14 @@
          return new Date(parseInt(value) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
      })
      //格式化ip
+     Vue.filter('long2ip',function(stringip){
+         var ipAddress = new Array();
+         ipAddress[0] = (stringip >>> 24) >>> 0;
+         ipAddress[1] = ((stringip << 8) >>> 24) >>> 0;
+         ipAddress[2] = (stringip << 16) >>> 24;
+         ipAddress[3] = (stringip << 24) >>> 24;
+         return String(ipAddress[0]) + "." + String(ipAddress[1]) + "." + String(ipAddress[2]) + "." + String(ipAddress[3]);
+     })
      new Vue({
          el: ".content",
          data: {
