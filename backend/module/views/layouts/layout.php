@@ -193,134 +193,21 @@
     <script src="./assets/admin/js/theme.js"></script>
     <script src="./assets/admin/js/wysihtml5-0.3.0.js"></script>
     <script src="./assets/admin/js/bootstrap-wysihtml5-0.0.2.js"></script>
+    <script src="./assets/admin/js/layout.js"></script>
     <script src="./assets/admin/js/vue-nav.js"></script>
 
-    <script type="text/javascript">
-        //jquery的全局loading事件
-        $(document).ajaxStart(function () {
-            $('.loading').show();
-        });
-        $(document).ajaxStop(function () {
-              $('.loading').hide();
-        });
-        $(document).ajaxError(function () {
-            console.log('错误，请重试。')
-        });
-        $(function () {
-            // jQuery Knobs
-            $(".knob").knob();
-            // jQuery UI Sliders
-            $(".slider-sample1").slider({
-                value: 100,
-                min: 1,
-                max: 500
-            });
-            $(".slider-sample2").slider({
-                range: "min",
-                value: 130,
-                min: 1,
-                max: 500
-            });
-            $(".slider-sample3").slider({
-                range: true,
-                min: 0,
-                max: 500,
-                values: [ 40, 170 ],
-            });
-            // jQuery Flot Chart
-            var visits = [[1, 50], [2, 40], [3, 45], [4, 23],[5, 55],[6, 65],[7, 61],[8, 70],[9, 65],[10, 75],[11, 57],[12, 59]];
-            var visitors = [[1, 25], [2, 50], [3, 23], [4, 48],[5, 38],[6, 40],[7, 47],[8, 55],[9, 43],[10,50],[11,47],[12, 39]];
-
-            var plot = $.plot($("#statsChart"),
-                [ { data: visits, label: "注册量"},
-                 { data: visitors, label: "访客量" }], {
-                    series: {
-                        lines: { show: true,
-                                lineWidth: 1,
-                                fill: true,
-                                fillColor: { colors: [ { opacity: 0.1 }, { opacity: 0.13 } ] }
-                             },
-                        points: { show: true,
-                                 lineWidth: 2,
-                                 radius: 3
-                             },
-                        shadowSize: 0,
-                        stack: true
-                    },
-                    grid: { hoverable: true,
-                           clickable: true,
-                           tickColor: "#f9f9f9",
-                           borderWidth: 0
-                        },
-                    legend: {
-                            // show: false
-                            labelBoxBorderColor: "#fff"
-                        },
-                    colors: ["#a7b5c5", "#30a0eb"],
-                    xaxis: {
-                        ticks: [[1, "一月"], [2, "二月"], [3, "三月"], [4,"四月"], [5,"五月"], [6,"六月"],
-                               [7,"七月"], [8,"八月"], [9,"九月"], [10,"十月"], [11,"十一月"], [12,"十二月"]],
-                        font: {
-                            size: 12,
-                            family: "Open Sans, Arial",
-                            variant: "small-caps",
-                            color: "#697695"
-                        }
-                    },
-                    yaxis: {
-                        ticks:3,
-                        tickDecimals: 0,
-                        font: {size:12, color: "#9da3a9"}
-                    }
-                 });
-
-            function showTooltip(x, y, contents) {
-                $('<div id="tooltip">' + contents + '</div>').css( {
-                    position: 'absolute',
-                    display: 'none',
-                    top: y - 30,
-                    left: x - 50,
-                    color: "#fff",
-                    padding: '2px 5px',
-                    'border-radius': '6px',
-                    'background-color': '#000',
-                    opacity: 0.80
-                }).appendTo("body").fadeIn(200);
-            }
-
-            var previousPoint = null;
-            $("#statsChart").bind("plothover", function (event, pos, item) {
-                if (item) {
-                    if (previousPoint != item.dataIndex) {
-                        previousPoint = item.dataIndex;
-
-                        $("#tooltip").remove();
-                        var x = item.datapoint[0].toFixed(0),
-                            y = item.datapoint[1].toFixed(0);
-
-                        var month = item.series.xaxis.ticks[item.dataIndex].label;
-
-                        showTooltip(item.pageX, item.pageY,
-                                    item.series.label + " of " + month + ": " + y);
-                    }
-                }
-                else {
-                    $("#tooltip").remove();
-                    previousPoint = null;
-                }
-            });
-        });
-        $(".wysihtml5").wysihtml5({
-            "font-styles": false
-        });
-        $("#addpic").click(function(){
-            var pic = $("#product-pics").clone();
-            pic.attr("style", "margin-left:120px");
-            $("#product-pics").parent().append(pic);
-        });
-
-    </script>
+    <!--vue 开始-->
     <script>
+        //jquery的全局loading事件
+    $(document).ajaxStart(function () {
+         $('.loading').show();
+    });
+    $(document).ajaxStop(function () {
+         $('.loading').hide();
+    });
+    $(document).ajaxError(function () {
+            console.log('错误，请重试。')
+     });
      new Vue({
          el:"body",
          data:{
@@ -335,6 +222,7 @@
              showSecondMenu:true,
              loadCache : false,//ajaxLoad加载缓存
          },
+         //初始化菜单
          init : function () {
              var _this = this;
              $.get('./index.php?r=admin/default/menu',function(res){
@@ -342,11 +230,13 @@
              })
          },
          methods : {
+             //加载外部文件
              _load:function(route){
                  var path = '/app/' + route + '.php';
                  this.loadCache ? null : path += '?r=' + (+new Date());
                  $('#container').load(path);
              },
+             //获取菜单列表 返回长度
              _getNavs : function(id){
                  var subMenus = [];
                  for(var i in this.menus)
@@ -358,6 +248,7 @@
                  }
                  return subMenus.length;
              },
+             //点击一级菜单
              clickMenu : function(id, event){
                  event.preventDefault();
                  this.hasChild = this._getNavs(id) > 0 ? true : false;
@@ -376,8 +267,8 @@
                  this.firstMenuIndex = id;
                  this.last_id = id;
              },
+             //点击二级菜单
              clickSecondMenu : function(id, event){
-
                  event.preventDefault();
                  this.secondMenuIndex = id;
                  $('.loading').show();

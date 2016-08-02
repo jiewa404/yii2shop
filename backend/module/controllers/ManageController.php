@@ -4,7 +4,6 @@ namespace backend\module\controllers;
 
 
 use Yii;
-use yii\data\Pagination;
 use yii\web;
 use yii\web\Controller;
 use backend\models\Admin;
@@ -17,7 +16,15 @@ use backend\models\Admin;
  */
 class ManageController extends Controller
 {
-    public $layout = false;
+      public $layout = false;
+      public function init()
+      {
+          parent::init();
+          if(!isset(Yii::$app->session['admin']['isLogin'])){
+              $this->redirect(['/admin/public/login']);
+              Yii::$app->end();
+          }
+      }
 
     /*
      * 管理员修改密码
