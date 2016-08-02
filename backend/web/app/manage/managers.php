@@ -35,9 +35,9 @@
                                     <td>{{manager.id}}</td>
                                     <td>{{manager.name}}</td>
                                     <td>{{manager.email}}</td>
-                                    <td>{{manager.last_login_time}}</td>
+                                    <td>{{manager.last_login_time | time}}</td>
                                     <td>{{manager.last_login_ip}}</td>
-                                    <td>{{manager.create_time}}</td>
+                                    <td>{{manager.create_time | time}}</td>
                                     <td class="align-left">
                                         <a href="">查看</a>
                                         <a href="">修改</a>
@@ -56,8 +56,13 @@
             </div>
         </div>
 
+
  <script>
-     //jquery的全局loading事件
+     //格式化时间戳
+     Vue.filter('time', function (value) {
+         return new Date(parseInt(value) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+     })
+     //格式化ip
      new Vue({
          el: ".content",
          data: {
